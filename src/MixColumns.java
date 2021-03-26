@@ -1,10 +1,12 @@
-
 import javax.xml.bind.DatatypeConverter;
 
 public class MixColumns {
     
     public static void main(String[] args) {
-    
+		
+		// FOR TESTING PURPOSES //
+		
+		// Create state array to pass into mixcolumn function for testing
         byte[][] state = {
 	        {(byte)0x87, (byte)0xF2, (byte)0x4D, (byte)0x97},
 	        {(byte)0x6E, (byte)0x4C, (byte)0x90, (byte)0xEC},
@@ -12,14 +14,12 @@ public class MixColumns {
 	        {(byte)0xA6, (byte)0x8C, (byte)0xD8, (byte)0x95}
 	    };
         
+		// Call mix columns function and save result
         byte[][] state_out = mix_columns(state);
         
-        //System.out.println(DatatypeConverter.printHexBinary(new byte[] {GF_2_8_mult3_LUT[Integer.parseInt("6",16)][Integer.parseInt("E",16)]})); 
-
-        
-        
+		// Print result (testing purposes)
         int row = 0;
-	int column = 0;
+		int column = 0;
 	    
         for (row = 0; row < 4; row++){
             for(column = 0; column < 4; column++){
@@ -28,13 +28,15 @@ public class MixColumns {
             System.out.print("\n");
             column = 0;
         }
-        
- 
     }   
     
+	// AES Mix Columns Function
     public static byte[][] mix_columns(byte[][] state_in){
+		
+		// Create final state array
         byte[][] state = new byte[4][4];
         
+		// Create GF 2^8 multiply by 2 look up table
         byte[][] GF_2_8_mult2_LUT = {
             {(byte)0x00,(byte)0x02,(byte)0x04,(byte)0x06,(byte)0x08,(byte)0x0a,(byte)0x0c,(byte)0x0e,(byte)0x10,(byte)0x12,(byte)0x14,(byte)0x16,(byte)0x18,(byte)0x1a,(byte)0x1c,(byte)0x1e},
             {(byte)0x20,(byte)0x22,(byte)0x24,(byte)0x26,(byte)0x28,(byte)0x2a,(byte)0x2c,(byte)0x2e,(byte)0x30,(byte)0x32,(byte)0x34,(byte)0x36,(byte)0x38,(byte)0x3a,(byte)0x3c,(byte)0x3e},
@@ -52,8 +54,9 @@ public class MixColumns {
             {(byte)0xbb,(byte)0xb9,(byte)0xbf,(byte)0xbd,(byte)0xb3,(byte)0xb1,(byte)0xb7,(byte)0xb5,(byte)0xab,(byte)0xa9,(byte)0xaf,(byte)0xad,(byte)0xa3,(byte)0xa1,(byte)0xa7,(byte)0xa5},
             {(byte)0xdb,(byte)0xd9,(byte)0xdf,(byte)0xdd,(byte)0xd3,(byte)0xd1,(byte)0xd7,(byte)0xd5,(byte)0xcb,(byte)0xc9,(byte)0xcf,(byte)0xcd,(byte)0xc3,(byte)0xc1,(byte)0xc7,(byte)0xc5},
             {(byte)0xfb,(byte)0xf9,(byte)0xff,(byte)0xfd,(byte)0xf3,(byte)0xf1,(byte)0xf7,(byte)0xf5,(byte)0xeb,(byte)0xe9,(byte)0xef,(byte)0xed,(byte)0xe3,(byte)0xe1,(byte)0xe7,(byte)0xe5}
-	};
+		};
         
+		// Create GF 2^8 multiply by 3 look up table
         byte[][] GF_2_8_mult3_LUT = {
             {(byte)0x00,(byte)0x03,(byte)0x06,(byte)0x05,(byte)0x0c,(byte)0x0f,(byte)0x0a,(byte)0x09,(byte)0x18,(byte)0x1b,(byte)0x1e,(byte)0x1d,(byte)0x14,(byte)0x17,(byte)0x12,(byte)0x11},
             {(byte)0x30,(byte)0x33,(byte)0x36,(byte)0x35,(byte)0x3c,(byte)0x3f,(byte)0x3a,(byte)0x39,(byte)0x28,(byte)0x2b,(byte)0x2e,(byte)0x2d,(byte)0x24,(byte)0x27,(byte)0x22,(byte)0x21},
@@ -72,14 +75,28 @@ public class MixColumns {
             {(byte)0x3b,(byte)0x38,(byte)0x3d,(byte)0x3e,(byte)0x37,(byte)0x34,(byte)0x31,(byte)0x32,(byte)0x23,(byte)0x20,(byte)0x25,(byte)0x26,(byte)0x2f,(byte)0x2c,(byte)0x29,(byte)0x2a},
             {(byte)0x0b,(byte)0x08,(byte)0x0d,(byte)0x0e,(byte)0x07,(byte)0x04,(byte)0x01,(byte)0x02,(byte)0x13,(byte)0x10,(byte)0x15,(byte)0x16,(byte)0x1f,(byte)0x1c,(byte)0x19,(byte)0x1a}
         };
-
-        for (int column=0;column<4;column++){
-            state[0][column] = (byte) ((2*state_in[0][column])^(3*state_in[1][column])^(1*state_in[2][column])^(1*state_in[3][column]));
-            state[1][column] = (byte) ((1*state_in[0][column])^(2*state_in[1][column])^(3*state_in[2][column])^(1*state_in[3][column]));
-            state[2][column] = (byte) ((1*state_in[0][column])^(1*state_in[1][column])^(2*state_in[2][column])^(3*state_in[3][column]));
-            state[3][column] = (byte) ((3*state_in[0][column])^(1*state_in[1][column])^(1*state_in[2][column])^(2*state_in[3][column]));
-        }        
+		
+		// Convert state input to string hex equivalent
+		int row = 0;
+		int column = 0;
+		String[][] state_in_string = new String[4][4];
+	    
+        for (row = 0; row < 4; row++){
+            for(column = 0; column < 4; column++){
+                state_in_string[row][column] = DatatypeConverter.printHexBinary(new byte[] {state_in[row][column]});
+            }
+            column = 0;
+        }
+		
+		// Compute the mix columns transformation using the created LUT's
+		for (column = 0; column < 4; column++){
+            state[0][column] = (byte) ((GF_2_8_mult2_LUT[Integer.parseInt(Character.toString(state_in_string[0][column].charAt(0)),16)][Integer.parseInt(Character.toString(state_in_string[0][column].charAt(1)),16)])^(GF_2_8_mult3_LUT[Integer.parseInt(Character.toString(state_in_string[1][column].charAt(0)),16)][Integer.parseInt(Character.toString(state_in_string[1][column].charAt(1)),16)])^(state_in[2][column])^(state_in[3][column]));
+            state[1][column] = (byte) ((state_in[0][column])^(GF_2_8_mult2_LUT[Integer.parseInt(Character.toString(state_in_string[1][column].charAt(0)),16)][Integer.parseInt(Character.toString(state_in_string[1][column].charAt(1)),16)])^(GF_2_8_mult3_LUT[Integer.parseInt(Character.toString(state_in_string[2][column].charAt(0)),16)][Integer.parseInt(Character.toString(state_in_string[2][column].charAt(1)),16)])^(state_in[3][column]));
+            state[2][column] = (byte) ((state_in[0][column])^(state_in[1][column])^(GF_2_8_mult2_LUT[Integer.parseInt(Character.toString(state_in_string[2][column].charAt(0)),16)][Integer.parseInt(Character.toString(state_in_string[2][column].charAt(1)),16)])^(GF_2_8_mult3_LUT[Integer.parseInt(Character.toString(state_in_string[3][column].charAt(0)),16)][Integer.parseInt(Character.toString(state_in_string[3][column].charAt(1)),16)]));
+            state[3][column] = (byte) ((GF_2_8_mult3_LUT[Integer.parseInt(Character.toString(state_in_string[0][column].charAt(0)),16)][Integer.parseInt(Character.toString(state_in_string[0][column].charAt(1)),16)])^(state_in[1][column])^(state_in[2][column])^(GF_2_8_mult2_LUT[Integer.parseInt(Character.toString(state_in_string[3][column].charAt(0)),16)][Integer.parseInt(Character.toString(state_in_string[3][column].charAt(1)),16)]));
+        }
+		
+		// Return the computed state matrix
         return state;          
-    }  
-
+    }
 }
