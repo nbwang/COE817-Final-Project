@@ -1,6 +1,6 @@
 import javax.xml.bind.DatatypeConverter;
 
-public class AddRoundKey {
+public class KeyExpansion {
 	
 	public static void main(String[] args) {
 		
