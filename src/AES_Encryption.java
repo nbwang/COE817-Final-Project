@@ -39,12 +39,19 @@ public class AES_Encryption {
 			state = KeyExpansion.add_roundKey(state, 0);
 			
 			for(int round = 1; round < 10; round++){
+				System.out.println("\n********************");
+				System.out.println("      ROUND  " + round + "      ");
+				System.out.println("********************");
 				state = SubBytes.sub_bytes(state);
 				state = ShiftRows.shift_rows(state);
 				state = MixColumns.mix_columns(state);
 				state = KeyExpansion.add_roundKey(state, round);
 			}
 			
+			
+			System.out.println("\n********************");
+			System.out.println("      ROUND 10      ");
+			System.out.println("********************");
 			state = SubBytes.sub_bytes(state);
 			state = ShiftRows.shift_rows(state);
 			state = KeyExpansion.add_roundKey(state, 10);
