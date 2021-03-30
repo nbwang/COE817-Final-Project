@@ -1,6 +1,5 @@
 //Import statements
 import javax.xml.bind.DatatypeConverter;
-import java.nio.charset.StandardCharsets;
 
 public class KeyExpansion {
 	
@@ -16,7 +15,7 @@ public class KeyExpansion {
 		}
 		
 		// Print the state matrix
-		printStateMatrix(state);
+		ConsoleOutput.printStateMatrix(state, "After Add Round Key:");
 		
 		// return state
 		return state;
@@ -114,38 +113,7 @@ public class KeyExpansion {
 			}
 		}
 		
-		printStateMatrix2(state);
+		ConsoleOutput.printStateMatrix(state, "Round Key:");
 		return state;
-	}
-	
-	public static void printStateMatrix(byte[][] state){
-		// Print state matrix
-		int row = 0, column = 0;
-		
-		System.out.print("\nAfter Add Round Key:\n");
-		
-		for(row = 0; row < 4; row++){
-			for(column = 0; column < 4; column++){
-				System.out.print(DatatypeConverter.printHexBinary(new byte[] {state[row][column]}) + " ");
-			}
-			
-			System.out.print("\n");
-			column = 0;
-		}
-	}
-	public static void printStateMatrix2(byte[][] state){
-		// Print state matrix
-		int row = 0, column = 0;
-		
-		System.out.print("\nKEY CHANGED:\n");
-		
-		for(row = 0; row < 4; row++){
-			for(column = 0; column < 4; column++){
-				System.out.print(DatatypeConverter.printHexBinary(new byte[] {state[row][column]}) + " ");
-			}
-			
-			System.out.print("\n");
-			column = 0;
-		}
 	}
 }
