@@ -1,5 +1,6 @@
 //Import statements
-import javax.xml.bind.DatatypeConverter;
+// import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
 
 public class KeyExpansion {
 	
@@ -20,12 +21,11 @@ public class KeyExpansion {
 		// return state
 		return state;
 	}
-	
+
 	// AES Key Expansion method
 	public static byte[][] key_expansion(byte[][] state_in, int roundNumber){
 		byte[][] state = new byte[4][4];
 		byte[] word = new byte[4];
-		byte[] tempWord = new byte[4];
 		String[] wordString = new String[4];
 		byte[] roundByte = {(byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00};
 		byte temp;
@@ -42,27 +42,39 @@ public class KeyExpansion {
         word[2] = word[3];
         word[3] = temp;
 
+		
+
 		switch(roundNumber){
             case 1:
                 roundByte[0] = (byte)0x01;
+				break;
             case 2:
                 roundByte[0] = (byte)0x02;
+				break;
             case 3:
                 roundByte[0] = (byte)0x04;	
+				break;
             case 4:
                 roundByte[0] = (byte)0x08;	
+				break;
             case 5:
                 roundByte[0] = (byte)0x10;	
+				break;
             case 6:
                 roundByte[0] = (byte)0x20;	
+				break;
             case 7:
                 roundByte[0] = (byte)0x40;	
+				break;
             case 8:
-                roundByte[0] = (byte)0x80;	
+                roundByte[0] = (byte)0x80;
+				break;	
             case 9:
                 roundByte[0] = (byte)0x1b;	
+				break;
             case 10:
                 roundByte[0] = (byte)0x36;	
+				break;
         }
 
 		byte[][] S_box = {
@@ -84,10 +96,10 @@ public class KeyExpansion {
 			{(byte)0x8c,(byte)0xa1,(byte)0x89,(byte)0x0d,(byte)0xbf,(byte)0xe6,(byte)0x42,(byte)0x68,(byte)0x41,(byte)0x99,(byte)0x2d,(byte)0x0f,(byte)0xb0,(byte)0x54,(byte)0xbb,(byte)0x16}, 
 		 };
 
-		 for(int i = 0; i < 4; i++){
-			wordString[i] = DatatypeConverter.printHexBinary(new byte[] {word[i]});
+		for(int i = 0; i < 4; i++){
+			wordString[i] = byteToHex(word[i]);
 		}
-
+		
 		for(int i = 0; i < 4; i++){
 			word[i] = (byte) S_box[Integer.parseInt(Character.toString(wordString[i].charAt(0)),16)][Integer.parseInt(Character.toString(wordString[i].charAt(1)),16)];
 		}
@@ -119,5 +131,12 @@ public class KeyExpansion {
 			System.out.print("\n");
 			column = 0;
 		}
+	}
+
+	public static String byteToHex(byte num) {
+		char[] hexDigits = new char[2];
+		hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);
+		hexDigits[1] = Character.forDigit((num & 0xF), 16);
+		return new String(hexDigits);
 	}
 }
