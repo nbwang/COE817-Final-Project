@@ -11,9 +11,11 @@ public class AES_Encryption {
 		// Create scanner class
 		Scanner sc = new Scanner(System.in);
 		
-		// Read in state input
+		// Read in state and key input
 		System.out.println("Please enter the plaintext to encrypt (Length = 16): ");
 		String plainText = sc.nextLine();
+		System.out.println("\nPlease enter the key to encrypt with (Length = 16): ");
+		String keyString = sc.nextLine();
 		
 		// Run encryption if plaintext length is 16
 		if(plainText.length() == 16){
@@ -30,13 +32,26 @@ public class AES_Encryption {
 				}
 			}
 			
+			// Convert keyString to 4x4 array
+			byte[][] key = new byte[4][4];
+			byte[] keyHex = DatatypeConverter.parseHexBinary(DatatypeConverter.printHexBinary(keyString.getBytes("US-ASCII")));
+			character = 0;
+			
+			for (int column = 0; column < 4; column++){
+				for (int row = 0; row < 4; row++){
+					key[row][column] = keyHex[character];
+					character++;
+				}
+			}
 			// Print text to encrypt and ascii hex equivalent
-			System.out.println("\nText to Encrypt:");
+			System.out.println("\nEncryption Parameters:");
 			System.out.println("Plaintext: " + plainText);
 			System.out.println("ASCII Hex Conversion: " + DatatypeConverter.printHexBinary(plainTextHex));
+			System.out.println("Key: " + keyString);
+			System.out.println("ASCII Hex Conversion: " + DatatypeConverter.printHexBinary(keyHex));
 			
 			// Run AES 10 rounds
-			state = KeyExpansion.add_roundKey(state, 0);
+			state = KeyExpansion.add_round_key(state, key);
 			
 			for(int round = 1; round < 10; round++){
 				System.out.println("\n********************");
@@ -45,7 +60,7 @@ public class AES_Encryption {
 				state = SubBytes.sub_bytes(state);
 				state = ShiftRows.shift_rows(state);
 				state = MixColumns.mix_columns(state);
-				state = KeyExpansion.add_roundKey(state, round);
+				state = KeyExpansion.add_round_key(state, KeyExpansion.key_expansion(key, round));
 			}
 			
 			
@@ -54,7 +69,7 @@ public class AES_Encryption {
 			System.out.println("********************");
 			state = SubBytes.sub_bytes(state);
 			state = ShiftRows.shift_rows(state);
-			state = KeyExpansion.add_roundKey(state, 10);
+			state = KeyExpansion.add_round_key(state, KeyExpansion.key_expansion(key, 10));
 		
 			// Convert encrypted state array back to string
 			byte[] encryptedTextHex = new byte[16];

@@ -1,10 +1,28 @@
-// Import statements
+//Import statements
 import javax.xml.bind.DatatypeConverter;
 
 public class KeyExpansion {
 	
 	// AES Add Round Key method
-	public static byte[][] add_roundKey(byte[][] state_in, int roundNumber){
+	public static byte[][] add_round_key(byte[][] state_in, byte[][] key_in){
+		byte[][] state = new byte[4][4];
+		
+		// XOR each cell in the two 4x4 matrices
+		for(int row = 0; row < 4; row++){
+			for(int column = 0; column < 4; column++){
+				state[row][column] = (byte) (state_in[row][column] ^ key_in[row][column]);
+			}
+		}
+		
+		// Print the state matrix
+		printStateMatrix(state);
+		
+		// return state
+		return state;
+	}
+	
+	// AES Key Expansion method
+	public static byte[][] key_expansion(byte[][] state_in, int roundNumber){
 		byte[][] state = new byte[4][4];
 		byte[] word = new byte[4];
 		String[] wordString = new String[4];
@@ -77,8 +95,6 @@ public class KeyExpansion {
 				state[row][column] = (byte) (word[row]^roundByte[row]);
 			}
 		}
-		
-		printStateMatrix(state);
 		return state;
 	}
 	
