@@ -71,7 +71,7 @@ public class KeyExpansion {
 
 		for(column = 1; column < 4; column++){
 			for(row = 0; row < 4; row++){
-				state[row][column] = (byte) ((byte) (state[row-1][column-1])^(state_in[row][column]));
+				state[row][column] = (byte) ((byte) (state[row][column-1])^(state_in[row][column]));
 			}
 		}
 
