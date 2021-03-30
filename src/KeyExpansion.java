@@ -97,7 +97,7 @@ public class KeyExpansion {
 		 };
 
 		for(int i = 0; i < 4; i++){
-			wordString[i] = byteToHex(word[i]);
+			wordString[i] = DatatypeConverter.printHexBinary(word[i]);
 		}
 		
 		for(int i = 0; i < 4; i++){
@@ -131,12 +131,5 @@ public class KeyExpansion {
 			System.out.print("\n");
 			column = 0;
 		}
-	}
-
-	public static String byteToHex(byte num) {
-		char[] hexDigits = new char[2];
-		hexDigits[0] = Character.forDigit((num >> 4) & 0xF, 16);
-		hexDigits[1] = Character.forDigit((num & 0xF), 16);
-		return new String(hexDigits);
 	}
 }
