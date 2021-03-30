@@ -17,4 +17,18 @@ public class ConsoleOutput {
 			column = 0;
 		}
 	}
+	
+	public static String paddTo16Characters(String stringToPad){
+		
+		String paddedInput = stringToPad;
+		int inputLength = stringToPad.length();
+		
+		if (inputLength < 16){
+			for(int i = inputLength; i < 16; i++){
+				paddedInput = paddedInput.concat("n");
+			}
+		}
+		
+		return paddedInput;
+	}
 }

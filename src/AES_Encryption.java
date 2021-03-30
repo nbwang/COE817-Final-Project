@@ -8,20 +8,29 @@ public class AES_Encryption {
 	// Main method
 	// Runs AES Encryption on input string (16 Bytes)
 	public static void main(String[] args) throws UnsupportedEncodingException {
+		
+		// Print starting message
+		System.out.println("\n**************************************************************");
+		System.out.println("                   AES Encryption Application                   ");
+		System.out.println("       Note: Uses PKCS7 Padding for inputs less then 16       ");
+		System.out.println("            characters which inserts 'n' character            ");
+		System.out.println("**************************************************************\n\n");
+
 		// Create scanner class
 		Scanner sc = new Scanner(System.in);
 		
 		// Read in state and key input
-		System.out.println("Please enter the plaintext to encrypt (Length = 16): ");
+		System.out.println("Please enter the plaintext to encrypt (Length = 16 or less): ");
 		String plainText = sc.nextLine();
-		System.out.println("\nPlease enter the key to encrypt with (Length = 16): ");
+		System.out.println("\nPlease enter the key to encrypt with (Length = 16 or less): ");
 		String keyString = sc.nextLine();
 		
-		// Run encryption if plaintext length is 16
-		if(plainText.length() == 16){
+		// Run encryption if plaintext length is 16 or less
+		if(plainText.length() <= 16 && keyString.length() <= 16){
 			
 			// Convert plaintextstring to state array
 			byte[][] state = new byte[4][4];
+			plainText = ConsoleOutput.paddTo16Characters(plainText);
 			byte[] plainTextHex = DatatypeConverter.parseHexBinary(DatatypeConverter.printHexBinary(plainText.getBytes("US-ASCII")));
 			int character = 0;
 			
@@ -34,6 +43,7 @@ public class AES_Encryption {
 			
 			// Convert keyString to 4x4 array
 			byte[][] key = new byte[4][4];
+			keyString = ConsoleOutput.paddTo16Characters(keyString);
 			byte[] keyHex = DatatypeConverter.parseHexBinary(DatatypeConverter.printHexBinary(keyString.getBytes("US-ASCII")));
 			character = 0;
 			
@@ -98,7 +108,7 @@ public class AES_Encryption {
 			ConsoleOutput.printStateMatrix(state, "State Matrix:");
 			System.out.println("\nASCII Hex: " + DatatypeConverter.printHexBinary(encryptedTextHex) + "\n");
 		}else{
-			System.out.println("Error: the plaintext you entered was not of length 16.");
+			System.out.println("Error: the plaintext or key you entered was more then a length of 16 characters.");
 		}	
 	}
 }
